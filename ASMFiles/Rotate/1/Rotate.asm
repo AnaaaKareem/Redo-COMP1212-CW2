@@ -1,45 +1,56 @@
+// Create and store the masking bit
 @16384
 D=A
-D=D+A
-@MASKER
+M=D+A
+
+// Store the value from R3 to R5
+(ANOTHER)
+@R3
+D=M
+@R5
 M=D
 
 (LOOP)
+// Cheack for the counter
 @R4
 D=M
 @FINISHED
 D;JEQ
 
-@MASKER
+// Check the 16th bit on the left
+@16384
 D=M
-@R3
+@R5
 D=D&M
+// If bit is 1 rotate
 @ROTATE_BITS
 D;JNE
 
-@R3
+// Perform a bit shift operation
+@R5
 D=M
 M=M+D
 @SUBTRACT_COUNTER
 0;JMP
 
+// Perform a bit rotation operation
 (ROTATE_BITS)
-@R3
-D=M
-M=M+1
+@R5
+D=M+1
 M=M+D
 
+// Subtract from the counter
 (SUBTRACT_COUNTER)
 @R4
-D=M
-M=D-1
+M=M-1
 @LOOP
 0;JMP
 
 (FINISHED)
-@R3
-D=M
+// Check if a new value is loaded
 @R5
-M=D
+D=M
+@ANOTHER
+D;JEQ
 @LOOP
 0;JMP
