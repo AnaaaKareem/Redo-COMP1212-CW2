@@ -78,3 +78,136 @@ M=M-1
 @LEFT_TO_RIGHT
 0;JMP
 (FINISHED_LEFT_TO_RIGHT)
+
+//// Start Encryption Process ////
+
+// Negate the Key and mask 8 bits on the right
+@R1
+D=!M
+@255
+D=D&A
+@R1
+M=D
+
+@4
+M=A
+
+(ENCRYPT)
+
+@4
+D=M
+@FINISHED_ENCRYPTION
+D;JEQ
+
+/// Store Li ///
+@R2
+D=M
+@Li
+M=D
+
+/// Create Li+1 ///
+@R3
+D=M
+@R2
+M=D
+
+/// Create Function Ri ⊕ ¬Ki ///
+@R3
+D=!M
+
+@R1
+D=D&M
+
+@NOT_Ri_AND_¬Ki
+M=D
+
+@R1
+D=!M
+
+@R3
+D=D&M
+
+@Ri_AND_NOT_¬Ki
+M=D
+
+@NOT_Ri_AND_¬Ki
+D=D|M
+
+@FUNCTION
+M=D
+
+/// Create Ri+1 ///
+@Li
+D=!M
+
+@FUNCTION
+D=D&M
+
+@NOT_Li_AND_FUNCTION
+M=D
+
+@FUNCTION
+D=!M
+
+@Li
+D=D&M
+
+@NOT_FUNCTION_AND_Li
+D=D|M
+
+@R3
+M=D
+
+/// Rotate Negated Key ///
+// Check for 8th bit 
+@128
+D=M
+@R1
+D=D&M
+@ROTATE_KEY
+D;JNE
+
+// Shift bits
+@R1
+D=M
+M=M+D
+@ENCRYPT
+0;JMP
+
+// Rotate bits
+(ROTATE_KEY)
+@R1
+D=M+1
+M=M+D
+@ENCRYPT
+0;JMP
+
+(FINISHED_ENCRYPTION)
+
+// Set shift counter
+@8
+M=A
+
+(RIGHT_TO_LEFT)
+// Check counter
+@8
+D=M
+@FINISHED_RIGHT_TO_LEFT
+D;JEQ
+
+// Shift right half
+@R3
+D=M
+M=M+D
+@RIGHT_TO_LEFT
+0;JMP
+
+(FINISHED_RIGHT_TO_LEFT)
+
+// Merge two halves and store them in R0
+@R2
+D=M
+@R3
+D=D&M
+@R0
+M=D
