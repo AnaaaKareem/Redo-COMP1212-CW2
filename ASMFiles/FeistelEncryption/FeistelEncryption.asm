@@ -1,15 +1,16 @@
 (START)
 
+@R0
+D=M
+@START
+D;JNE
+
 //// Setup masking for rotation ////
 
 // Create 16th bit masker
 @16384
 D=A
 M=D+A
-
-// Create 8th bit masker
-@128
-M=A
 
 //// Split the value stored in RAM[2] ////
 
@@ -44,7 +45,7 @@ M=A
 
 (LEFT_TO_RIGHT)
 // Check if counter is zero
-@R8
+@8
 D=M
 @FINISHED_LEFT_TO_RIGHT
 D;JEQ
@@ -118,7 +119,7 @@ D=!M
 @R1
 D=D&M
 
-@NOT_Ri_AND_¬Ki
+@NOT_Ri_AND_NKi
 M=D
 
 @R1
@@ -127,10 +128,10 @@ D=!M
 @R3
 D=D&M
 
-@Ri_AND_NOT_¬Ki
+@Ri_AND_NOT_NKi
 M=D
 
-@NOT_Ri_AND_¬Ki
+@NOT_Ri_AND_NKi
 D=D|M
 
 @FUNCTION
@@ -152,7 +153,10 @@ D=!M
 @Li
 D=D&M
 
-@NOT_FUNCTION_AND_Li
+@Li_AND_NOT_FUNCTION
+M=D
+
+@NOT_Li_AND_FUNCTION
 D=D|M
 
 @R3
@@ -161,7 +165,7 @@ M=D
 /// Rotate Negated Key ///
 // Check for 8th bit 
 @128
-D=M
+D=A
 @R1
 D=D&M
 @ROTATE_KEY
@@ -171,7 +175,7 @@ D;JNE
 @R1
 D=M
 M=M+D
-@ENCRYPT
+@SUBTRACT_COUNTER
 0;JMP
 
 // Rotate bits
@@ -179,10 +183,22 @@ M=M+D
 @R1
 D=M+1
 M=M+D
+// Mask 8 bits on the right
+@255
+D=A
+@R1
+M=M&D
+
+(SUBTRACT_COUNTER)
+// Subtract from counter
+@4
+M=M-1
 @ENCRYPT
 0;JMP
 
 (FINISHED_ENCRYPTION)
+
+//// Shift Right to Left ////
 
 // Set shift counter
 @8
@@ -199,15 +215,25 @@ D;JEQ
 @R3
 D=M
 M=M+D
+
+// Subtract from counter
+@8
+M=M-1
+
 @RIGHT_TO_LEFT
 0;JMP
 
 (FINISHED_RIGHT_TO_LEFT)
 
+//// Finish Encryption ////
+
 // Merge two halves and store them in R0
 @R2
 D=M
 @R3
-D=D&M
+D=D|M
 @R0
 M=D
+
+@START
+0;JMP
