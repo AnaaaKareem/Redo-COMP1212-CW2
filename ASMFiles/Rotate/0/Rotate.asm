@@ -3,7 +3,7 @@
 D=A
 M=D+A
 
-(LOOP)
+(ROTATE)
 // Cheack for the counter
 @R4
 D=M
@@ -36,7 +36,7 @@ M=M+D
 (SUBTRACT_COUNTER)
 @R4
 M=M-1
-@LOOP
+@ROTATE
 0;JMP
 
 // Store the final value in R5
@@ -46,5 +46,5 @@ D=M
 @R5
 M=D
 // Jump back to the beginning
-@LOOP
+@ROTATE
 0;JMP

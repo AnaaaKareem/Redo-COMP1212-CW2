@@ -235,5 +235,11 @@ D=D|M
 @R0
 M=D
 
+// Reset Key
+@R0
+D=A
+@R1
+M=D
+
 @START
 0;JMP

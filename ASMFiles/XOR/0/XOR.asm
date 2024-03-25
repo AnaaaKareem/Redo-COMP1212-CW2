@@ -1,4 +1,4 @@
-(TEST_PURPOSES)
+(REPEAT)
 // Load First Value
 @R3
 D=M
@@ -36,5 +36,5 @@ D=D&M
 M=D
 
 // Get back to the start for testing purposes
-@TEST_PURPOSES
+@REPEAT
 0;JMP

@@ -1,4 +1,4 @@
-(TEST_PURPOSES)
+(REPEAT)
 
 // Load the negated first value
 @R3
@@ -33,5 +33,5 @@ D=D|M
 M=D
 
 // Get back to the start for testing purposes
-@TEST_PURPOSES
+@REPEAT
 0;JMP
